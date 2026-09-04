@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hinglish AI Writer</title>
+    <style>
+      :root {
+        --bg: #f7f8fc;
+        --card: #ffffff;
+        --text: #171a21;
+        --muted: #7b8190;
+        --border: #e6e8ef;
+        --accent: #6d5dfc;
+        --accent-soft: #f0edff;
+        --shadow: 0 18px 50px rgba(24, 28, 45, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+          "Segoe UI", Inter, system-ui, sans-serif;
+        background:
+          radial-gradient(circle at top left, #ede9ff 0, transparent 34%),
+          radial-gradient(circle at top right, #eaf4ff 0, transparent 28%),
+          var(--bg);
+        color: var(--text);
+      }
+
+      .page {
+        width: min(1180px, 92vw);
+        margin: 0 auto;
+        padding: 34px 0 50px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 28px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        font-size: 20px;
+      }
+
+      .logo {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        color: white;
+        background: linear-gradient(135deg, #7d6bff, #5a47ea);
+        box-shadow: 0 10px 25px rgba(109, 93, 252, 0.28);
+        font-size: 18px;
+      }
+
+      .status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--muted);
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid var(--border);
+        padding: 9px 12px;
+        border-radius: 999px;
+        backdrop-filter: blur(10px);
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #2dbf79;
+        box-shadow: 0 0 0 4px rgba(45, 191, 121, 0.12);
+      }
+
+      .hero {
+        margin-bottom: 22px;
+      }
+
+      .hero h1 {
+        font-size: clamp(34px, 5vw, 58px);
+        line-height: 1;
+        margin: 0 0 12px;
+        letter-spacing: -0.055em;
+      }
+
+      .hero p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 16px;
+      }
+
+      .workspace {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: 20px;
+        align-items: start;
+      }
+
+      .editor-card,
+      .side-card {
+        background: rgba(255, 255, 255, 0.86);
+        border: 1px solid rgba(230, 232, 239, 0.95);
+        box-shadow: var(--shadow);
+        border-radius: 24px;
+        backdrop-filter: blur(16px);
+      }
+
+      .editor-card {
+        padding: 28px;
+      }
+
+      .editor-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+      }
+
+      .label {
+        font-weight: 700;
+        font-size: 14px;
+      }
+
+      .hint {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 320px;
+        resize: vertical;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 20px;
+        font:
+          500 22px/1.65 -apple-system,
+          BlinkMacSystemFont,
+          "SF Pro Text",
+          "Segoe UI",
+          Inter,
+          system-ui,
+          sans-serif;
+        color: var(--text);
+        outline: none;
+        background: #fcfcfe;
+        transition: 0.2s ease;
+      }
+
+      textarea:focus {
+        border-color: rgba(109, 93, 252, 0.5);
+        box-shadow: 0 0 0 5px rgba(109, 93, 252, 0.08);
+        background: #fff;
+      }
+
+      .suggestions-wrap {
+        margin-top: 18px;
+      }
+
+      .suggestions-title {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+
+      .suggestions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+        min-height: 42px;
+      }
+
+      .suggestion {
+        border: 1px solid #e3e0ff;
+        background: var(--accent-soft);
+        color: #4436b7;
+        border-radius: 12px;
+        padding: 10px 14px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.15s ease;
+      }
+
+      .suggestion:hover {
+        transform: translateY(-1px);
+        background: #e8e4ff;
+        border-color: #d6d0ff;
+      }
+
+      .suggestion:active {
+        transform: translateY(0);
+      }
+
+      .empty {
+        color: var(--muted);
+        font-size: 14px;
+        padding: 10px 0;
+      }
+
+      .side-card {
+        padding: 22px;
+      }
+
+      .side-card h3 {
+        margin: 0 0 16px;
+        font-size: 15px;
+      }
+
+      .feature {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+        padding: 11px 0;
+        border-bottom: 1px solid #f0f1f5;
+      }
+
+      .feature:last-child {
+        border-bottom: 0;
+      }
+
+      .icon {
+        width: 31px;
+        height: 31px;
+        border-radius: 9px;
+        display: grid;
+        place-items: center;
+        background: #f4f2ff;
+        color: var(--accent);
+        flex: 0 0 auto;
+        font-size: 14px;
+      }
+
+      .feature strong {
+        display: block;
+        font-size: 13px;
+        margin-bottom: 3px;
+      }
+
+      .feature span {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.4;
+      }
+
+      .footer {
+        margin-top: 16px;
+        color: var(--muted);
+        font-size: 12px;
+        text-align: center;
+      }
+
+      .loading {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .spinner {
+        width: 14px;
+        height: 14px;
+        border: 2px solid #d9dce7;
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 850px) {
+        .workspace {
+          grid-template-columns: 1fr;
+        }
+        .side-card {
+          display: none;
+        }
+        textarea {
+          min-height: 280px;
+        }
+      }
+
+      @media (max-width: 520px) {
+        .page {
+          width: 94vw;
+          padding-top: 20px;
+        }
+        .editor-card {
+          padding: 18px;
+        }
+        .hero h1 {
+          font-size: 40px;
+        }
+        textarea {
+          font-size: 19px;
+          min-height: 250px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo">H</div>
+          Grammarly for Hinglish
+        </div>
+      </div>
+
+      <section class="hero">
+        <h1>Write naturally.<br />Get the next word.</h1>
+        <p>
+          Type in Hinglish. Suggestions appear automatically after you press
+          space.
+        </p>
+      </section>
+
+      <div class="workspace">
+        <main class="editor-card">
+          <div class="editor-header">
+            <div class="label">Your text</div>
+            <div class="hint">Press space → predict</div>
+          </div>
+
+          <textarea
+            id="editor"
+            spellcheck="false"
+            placeholder="Start typing…&#10;&#10;Example: aap kya kar rahe "
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+          ></textarea>
+
+          <div class="suggestions-wrap">
+            <div class="suggestions-title">Suggestions</div>
+            <div id="suggestions" class="suggestions">
+              <div class="empty">Start typing to see suggestions.</div>
+            </div>
+          </div>
+        </main>
+
+        <aside class="side-card">
+          <h3>How it works</h3>
+
+          <div class="feature">
+            <div class="icon">⌨</div>
+            <div>
+              <strong>Type normally</strong>
+              <span>No submit button needed.</span>
+            </div>
+          </div>
+
+          <div class="feature">
+            <div class="icon">↗</div>
+            <div>
+              <strong>Space triggers prediction</strong>
+              <span>The latest context is sent to your model.</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="footer">Hinglish Next-Word Predictor · Qwen3-0.6B + LoRA</div>
+    </div>
+
+    <script>
+      const editor = document.getElementById("editor");
+      const suggestionsEl = document.getElementById("suggestions");
+
+      let debounceTimer = null;
+      let requestId = 0;
+
+      // Temporary demo suggestions. Replace the /predict call below
+      // once the local Python backend is connected.
+      const demoSuggestions = ["ho", "hain", "rahe", "the", "bhi"];
+
+      function showSuggestions(words) {
+        suggestionsEl.innerHTML = "";
+
+        if (!words || words.length === 0) {
+          const div = document.createElement("div");
+          div.className = "empty";
+          div.textContent = "No suggestions yet.";
+          suggestionsEl.appendChild(div);
+          return;
+        }
+
+        words.forEach((word) => {
+          const btn = document.createElement("button");
+          btn.className = "suggestion";
+          btn.type = "button";
+          btn.textContent = word;
+
+          btn.addEventListener("click", () => {
+            insertSuggestion(word);
+          });
+
+          suggestionsEl.appendChild(btn);
+        });
+      }
+
+      function insertSuggestion(word) {
+        const value = editor.value;
+        const trimmedRight = value.replace(/\s+$/, "");
+        editor.value = trimmedRight + " " + word + " ";
+        editor.focus();
+
+        // Immediately predict after inserting the selected word.
+        predict(editor.value);
+      }
+
+      async function predict(text) {
+        const context = text.trim();
+
+        if (!context) {
+          showSuggestions([]);
+          return;
+        }
+
+        const thisRequest = ++requestId;
+
+        suggestionsEl.innerHTML =
+          '<div class="loading"><span class="spinner"></span>Predicting…</div>';
+
+        try {
+          const response = await fetch("/predict", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              text: context,
+              top_k: 5,
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Backend unavailable");
+          }
+
+          const data = await response.json();
+
+          if (thisRequest !== requestId) return;
+
+          showSuggestions(data.predictions || []);
+        } catch (error) {
+          if (thisRequest !== requestId) return;
+
+          // Keep UI usable even before backend is connected.
+          showSuggestions(demoSuggestions);
+        }
+      }
+
+      function shouldPredict(text) {
+        // Only predict when the user has just entered whitespace
+        // after a meaningful context.
+        return /\s$/.test(text) && text.trim().length > 0;
+      }
+
+      editor.addEventListener("input", () => {
+        clearTimeout(debounceTimer);
+
+        const text = editor.value;
+
+        if (!shouldPredict(text)) return;
+
+        // Tiny delay prevents multiple requests during rapid typing.
+        debounceTimer = setTimeout(() => {
+          predict(text);
+        }, 120);
+      });
+
+      editor.addEventListener("keydown", (event) => {
+        if (event.key === "Tab") {
+          event.preventDefault();
+
+          const first = suggestionsEl.querySelector(".suggestion");
+          if (first) {
+            insertSuggestion(first.textContent);
+          }
+        }
+
+        if (event.key === "Escape") {
+          showSuggestions([]);
+        }
+      });
+
+      showSuggestions([]);
+    </script>
+  </body>
+</html>
