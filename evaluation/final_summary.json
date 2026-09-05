@@ -1,0 +1,10 @@
+{
+  "model": "Qwen/Qwen3-0.6B-Base",
+  "adapter": "/content/drive/MyDrive/hinglish-next-word-predictor/models/qwen3-0.6b-hinglish-lora-final",
+  "test_examples": 4393,
+  "top1_accuracy": 12.360573639881629,
+  "top3_accuracy": 19.28067379922604,
+  "top5_accuracy": 22.80901434099704,
+  "evaluation_time_seconds": 2383.2819831371307,
+  "average_seconds_per_example": 0.5425180931338791
+}
