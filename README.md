@@ -499,43 +499,6 @@ Use a context-aware normalization model rather than simple dictionary replacemen
 
 # 5.5 Project Task Distribution
 
-### Member 1 — Data & Preprocessing
-
-- Dataset collection
-- Dataset analysis
-- Sentence reconstruction
-- Duplicate removal
-- Train/validation/test split
-- Dataset documentation
-
-### Member 2 — Model & Training
-
-- N-gram baseline
-- Qwen model selection
-- LoRA configuration
-- Fine-tuning
-- Training experiments
-- Hyperparameter experiments
-
-### Member 3 — Evaluation & Normalization
-
-- Evaluation pipeline
-- Top-1/Top-3/Top-5 metrics
-- Error analysis
-- Hinglish normalization research
-- Normalization model development
-
-### Member 4 — Application & Deployment
-
-- FastAPI backend
-- Prediction endpoint
-- Browser UI
-- Suggestion interaction
-- Local Mac deployment
-- Final demonstration
-
-Responsibilities can be combined if the project has fewer members.
-
 ---
 
 # 6. Repository Structure
@@ -649,43 +612,13 @@ CUDA / NVIDIA Tesla T4
 
 ---
 
-# 10. Normalization
-
-The project investigates Hinglish text normalization as a separate internal component.
-
-The normalization corpus provides:
-
-```text
-inputText → normalizedText
-```
-
-examples and includes short forms, acronyms, typos, wordplay, Romanized Hindi, splitting, and merging.
-
-The current Qwen next-word model was trained directly on `all.txt`. Therefore, the normalization model has **not been integrated into the current Qwen training pipeline**.
-
-The intended architecture is:
-
-```text
-User Input
-    ↓
-Internal Hinglish Normalization
-    ↓
-Qwen + LoRA Next-Word Predictor
-    ↓
-Word Suggestions
-```
-
-The normalized text would remain internal and would not need to be displayed to the user.
-
----
-
-# 11. Conclusion
+# 10. Conclusion
 
 This project develops a Hinglish-specific next-word prediction system using a pretrained causal language model adapted with LoRA. The system is designed around Romanized Hindi, English-Hindi code mixing, informal spelling, and contextual word usage. A traditional n-gram baseline was investigated to establish the limitations of sparse context-based prediction, while Qwen3-0.6B was selected as the main contextual language model. The resulting model can be integrated into a real-time browser-based writing assistant that provides suggestions while the user types. Future work will focus on rigorous word-level evaluation, improved candidate ranking, context-aware normalization, latency optimization, and deployment as a practical Hinglish writing assistant.
 
 ---
 
-# 12. References
+# 11. References
 
 1. **A Dataset for Hindi-English Code-Mixed Text Normalization.**  
    Provides the 13,494-pair Hinglish normalization corpus and normalization research basis.
